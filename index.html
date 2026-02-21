@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Pro - Free Professional QR Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            color: white;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .logo svg {
+            width: 50px;
+            height: 50px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+        }
+
+        .input-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="number"] {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 50px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .color-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .color-box {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-box:hover {
+            transform: scale(1.1);
+        }
+
+        .color-box.active {
+            border-color: #2d3748;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+
+        .color-box.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .preview-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #qrcode {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            min-height: 220px;
+            min-width: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .placeholder-text {
+            color: #a0aec0;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .placeholder-text svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .download-section {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .download-label {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .download-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .download-btn {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #4a5568;
+        }
+
+        .download-btn:hover:not(:disabled) {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #e2e8f0;
+            border-color: #cbd5e0;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+        }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: #718096;
+            line-height: 1.5;
+        }
+
+        .about-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .about-section h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .about-section p {
+            color: #718096;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .contact-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-email:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #48bb78;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        .toast.error {
+            background: #e53e3e;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .card-header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .download-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <path d="M7 7h4v4H7zM15 7h2v2h-2zM7 15h2v2H7zM15 15h4v4h-4z"/>
+                </svg>
+                <span>QR Code Pro</span>
+            </div>
+            <p class="tagline">Professional QR Code Generator - Free, Fast & Secure</p>
+        </header>
+
+        <div class="main-card">
+            <div class="card-header">
+                <h2>Create Your QR Code</h2>
+                <p>Enter your URL or text below and customize your QR code instantly</p>
+            </div>
+            
+            <div class="card-body">
+                <div class="input-section">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v6m0 6v6m4.22-10.22l4.24-4.24M6.34 17.66l-4.24 4.24M23 12h-6m-6 0H1m20.24 4.24l-4.24-4.24M6.34 6.34L2.1 2.1"/>
+                        </svg>
+                        Configuration
+                    </h3>
+                    
+                    <div class="input-group">
+                        <label for="qrText">URL or Text *</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔗</span>
+                            <input type="url" id="qrText" placeholder="https://example.com or any text" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>QR Code Color</label>
+                        <div class="color-options">
+                            <div class="color-box active" style="background: #000000" data-color="#000000" title="Black"></div>
+                            <div class="color-box" style="background: #667eea" data-color="#667eea" title="Purple"></div>
+                            <div class="color-box" style="background: #e53e3e" data-color="#e53e3e" title="Red"></div>
+                            <div class="color-box" style="background: #38a169" data-color="#38a169" title="Green"></div>
+                            <div class="color-box" style="background: #3182ce" data-color="#3182ce" title="Blue"></div>
+                            <div class="color-box" style="background: #d69e2e" data-color="#d69e2e" title="Yellow"></div>
+                            <input type="color" id="customColor" value="#000000" title="Custom Color">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="qrSize">Size (px)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📐</span>
+                            <input type="number" id="qrSize" placeholder="256" value="256" min="100" max="1000">
+                        </div>
+                    </div>
+
+                    <button class="generate-btn" id="generateBtn" onclick="generateQR()">
+                        <span>⚡ Generate QR Code</span>
+                    </button>
+                </div>
+
+                <div class="preview-section">
+                    <div class="preview-label">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        Preview
+                    </div>
+                    <div id="qrcode">
+                        <div class="placeholder-text">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <path d="M7 7h4v4H7zM15 7h2v2h-2zM7 15h2v2H7zM15 15h4v4h-4z"/>
+                            </svg>
+                            <p>Your QR code will<br>appear here</p>
+                        </div>
+                    </div>
+                    
+                    <div class="download-section">
+                        <div class="download-label">Download Options</div>
+                        <div class="download-buttons">
+                            <button class="download-btn" id="btnPng" onclick="downloadQR('png')" disabled>
+                                <span>📷</span> PNG
+                            </button>
+                            <button class="download-btn" id="btnJpg" onclick="downloadQR('jpg')" disabled>
+                                <span>🖼️</span> JPG
+                            </button>
+                            <button class="download-btn" id="btnSvg" onclick="downloadQR('svg')" disabled>
+                                <span>🎨</span> SVG
+                            </button>
+                            <button class="download-btn" id="btnCopy" onclick="copyQR()" disabled>
+                                <span>📋</span> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                </div>
+                <h3>Lightning Fast</h3>
+                <p>Generate QR codes instantly with our optimized engine</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 2a10 10 0 0 1 10 10c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                </div>
+                <h3>Customizable</h3>
+                <p>Choose colors and sizes to match your brand perfectly</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <h3>100% Secure</h3>
+                <p>Your data never leaves your browser. Complete privacy guaranteed.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                        <line x1="12" y1="18" x2="12.01" y2="18"/>
+                    </svg>
+                </div>
+                <h3>Mobile Friendly</h3>
+                <p>Works perfectly on all devices and screen sizes</p>
+            </div>
+        </div>
+
+        <!-- About Section with Your Email -->
+        <div class="about-section">
+            <h3>About QR Code Pro</h3>
+            <p>We provide free, professional QR code generation services for businesses and individuals worldwide.</p>
+            <a href="mailto:qrcodpro@gmail.com" class="contact-email">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+<polyline points="22,6 12,13 2,6"/>
+</svg>
+qrcodpro@gmail.com
+</a>
+</div>
+
+<footer>
+<p>&copy; 2024 QR Code Pro. All rights reserved.</p>
+</footer>
+</div>
+
+<div class="toast" id="toast">
+<span id="toastMessage">Success!</span>
+</div>
+
+<script>
+let selectedColor = '#000000';
+let qrCodeObj = null;
+
+document.querySelectorAll('.color-box').forEach(box => {
+box.addEventListener('click', function() {
+document.querySelectorAll('.color-box').forEach(b => b.classList.remove('active'));
+this.classList.add('active');
+selectedColor = this.dataset.color;
+document.getElementById('customColor').value = selectedColor;
+});
+});
+
+document.getElementById('customColor').addEventListener('change', function() {
+document.querySelectorAll('.color-box').forEach(b => b.classList.remove('active'));
+selectedColor = this.value;
+});
+
+function generateQR() {
+const text = document.getElementById('qrText').value.trim();
+const size = parseInt(document.getElementById('qrSize').value) || 256;
+if (!text) {
+showToast('Please enter URL or text!', 'error');
+document.getElementById('qrText').focus();
+return;
+}
+const btn = document.getElementById('generateBtn');
+const originalText = btn.innerHTML;
+btn.disabled = true;
+btn.innerHTML = '<div class="spinner"></div><span>Generating...</span>';
+const container = document.getElementById('qrcode');
+container.innerHTML = '';
+setTimeout(() => {
+try {
+qrCodeObj = new QRCode(container, {
+text: text,
+width: size,
+height: size,
+colorDark: selectedColor,
+colorLight: "#ffffff",
+correctLevel: QRCode.CorrectLevel.H
+});
+setTimeout(() => {
+enableDownloadButtons(true);
+showToast('QR Code generated successfully!');
+}, 300);
+} catch (error) {
+showToast('Error generating QR code!', 'error');
+container.innerHTML = '<div class="placeholder-text"><p>Error generating QR. Please try again.</p></div>';
+} finally {
+btn.disabled = false;
+btn.innerHTML = originalText;
+}
+}, 400);
+}
+
+function enableDownloadButtons(enable) {
+const buttons = ['btnPng', 'btnJpg', 'btnSvg', 'btnCopy'];
+buttons.forEach(id => {
+document.getElementById(id).disabled = !enable;
+});
+}
+
+function downloadQR(format) {
+const canvas = document.querySelector('#qrcode canvas');
+if (!canvas) {
+showToast('Please generate QR code first!', 'error');
+return;
+}
+try {
+let dataUrl;
+let filename = `qrcode-${Date.now()}`;
+if (format === 'jpg' || format === 'jpeg') {
+const tempCanvas = document.createElement('canvas');
+const ctx = tempCanvas.getContext('2d');
+tempCanvas.width = canvas.width;
+tempCanvas.height = canvas.height;
+ctx.fillStyle = '#FFFFFF';
+ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+ctx.drawImage(canvas, 0, 0);
+dataUrl = tempCanvas.toDataURL('image/jpeg', 0.9);
+filename += '.jpg';
+} else if (format === 'svg') {
+const svgData = createSVGFromCanvas(canvas);
+const blob = new Blob([svgData], {type: 'image/svg+xml'});
+dataUrl = URL.createObjectURL(blob);
+filename += '.svg';
+} else {
+dataUrl = canvas.toDataURL('image/png');
+filename += '.png';
+}
+const link = document.createElement('a');
+link.download = filename;
+link.href = dataUrl;
+document.body.appendChild(link);
+link.click();
+document.body.removeChild(link);
+if (format === 'svg') {
+setTimeout(() => URL.revokeObjectURL(dataUrl), 1000);
+}
+showToast(`Downloaded as ${format.toUpperCase()}`);
+} catch (error) {
+showToast('Download failed. Try again!', 'error');
+}
+}
+
+function createSVGFromCanvas(canvas) {
+const width = canvas.width;
+const height = canvas.height;
+const ctx = canvas.getContext('2d');
+const imageData = ctx.getImageData(0, 0, width, height);
+const data = imageData.data;
+let moduleSize = 4;
+for (let i = 0; i < width; i++) {
+const idx = i * 4;
+if (data[idx] < 128) {
+let count = 0;
+while (i + count < width && data[(i + count) * 4] < 128) {
+count++;
+}
+moduleSize = count;
+break;
+}
+}
+let svg = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+svg += `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">\n`;
+svg += `<rect width="100%" height="100%" fill="white"/>\n`;
+for (let y = 0; y < height; y += moduleSize) {
+for (let x = 0; x < width; x += moduleSize) {
+const i = (Math.floor(y) * width + Math.floor(x)) * 4;
+if (i < data.length && data[i] < 128) {
+svg += `<rect x="${x}" y="${y}" width="${moduleSize}" height="${moduleSize}" fill="${selectedColor}"/>\n`;
+}
+}
+}
+svg += `</svg>`;
+return svg;
+}
+
+function copyQR() {
+const canvas = document.querySelector('#qrcode canvas');
+if (!canvas) {
+showToast('Please generate QR code first!', 'error');
+return;
+}
+try {
+canvas.toBlob(blob => {
+if (!blob) {
+showToast('Copy failed!', 'error');
+return;
+}
+const item = new ClipboardItem({ 'image/png': blob });
+navigator.clipboard.write([item]).then(() => {
+showToast('Copied to clipboard!');
+}).catch(err => {
+fallbackCopy(canvas);
+});
+});
+} catch (error) {
+fallbackCopy(canvas);
+}
+}
+
+function fallbackCopy(canvas) {
+try {
+const dataUrl = canvas.toDataURL();
+const textarea = document.createElement('textarea');
+textarea.value = dataUrl;
+document.body.appendChild(textarea);
+textarea.select();
+document.execCommand('copy');
+document.body.removeChild(textarea);
+showToast('Image data copied!');
+} catch (e) {
+showToast('Copy not supported in this browser', 'error');
+}
+}
+
+function showToast(message, type = 'success') {
+const toast = document.getElementById('toast');
+const toastMessage = document.getElementById('toastMessage');
+toastMessage.textContent = message;
+toast.className = 'toast' + (type === 'error' ? ' error' : '');
+toast.classList.add('show');
+setTimeout(() => {
+toast.classList.remove('show');
+}, 3000);
+}
+
+document.getElementById('qrText').addEventListener('keypress', function(e) {
+if (e.key === 'Enter') generateQR();
+});
+</script>
+</body>
+</html>
