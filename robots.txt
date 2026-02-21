@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://meowmingle999-source.github.io/qr-code-pro/sitemap.xml
